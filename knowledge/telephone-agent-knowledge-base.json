@@ -1,0 +1,655 @@
+{
+  "domains": [
+    {
+      "id": "phone",
+      "name": "Call rails",
+      "blurb": "Boundary, authority, source of truth, security."
+    },
+    {
+      "id": "visits",
+      "name": "Visits",
+      "blurb": "What the scheduling tool lets the phone agent book."
+    },
+    {
+      "id": "rx",
+      "name": "Prescriptions",
+      "blurb": "Refill requests and the controlled-substance stop."
+    },
+    {
+      "id": "insurance",
+      "name": "Insurance",
+      "blurb": "Eligibility, cost share, and prior auth as returned."
+    },
+    {
+      "id": "billing",
+      "name": "Billing",
+      "blurb": "Statements, denials, payments, and assistance."
+    },
+    {
+      "id": "compliance",
+      "name": "Handoff",
+      "blurb": "Identity check, emergency script, when to transfer."
+    }
+  ],
+  "articles": [
+    {
+      "id": "phone-boundaries",
+      "domain": "phone",
+      "title": "Boundary",
+      "summary": "A telephone agent only. Speak, read back, use tools, or transfer. Do not practice medicine or negotiate coverage.",
+      "tool": "None. Boundary is this article, not a caller request.",
+      "may": [
+        "Book, move, or cancel a visit the scheduling tool marks agent-bookable.",
+        "Submit a refill for a non-controlled drug already on the active list.",
+        "Read eligibility, cost share, prior-auth status, statement lines, and balances the tools return.",
+        "Move a verified caller into the hosted payment system.",
+        "Warm-transfer to a named queue."
+      ],
+      "mustNot": [
+        "Diagnose, triage beyond the emergency script, or advise starting, stopping, or changing a medicine.",
+        "Promise a claim will pay, a fee will be waived, or a denial will be overturned.",
+        "Change codes, write off a balance, or authorize a service.",
+        "Continue the case by chat, email, or any channel this call did not start."
+      ],
+      "say": [
+        "I can help with the appointment, the refill request, or what the plan and the bill currently show. I can’t advise on the medicine or change what the plan decided."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "boundary",
+        "scope"
+      ],
+      "escalate": "Anything outside the May list is a transfer, not a workaround.",
+      "sections": [
+        {
+          "heading": "How to hold the line",
+          "body": [
+            "Say the boundary once. Do not soften it into a maybe.",
+            "Offer the transfer in the same sentence."
+          ]
+        }
+      ],
+      "related": [
+        "phone-authority",
+        "phone-source",
+        "phone-security",
+        "escalate-clinical"
+      ]
+    },
+    {
+      "id": "phone-authority",
+      "domain": "phone",
+      "title": "Authority",
+      "summary": "The caller’s story does not grant authority. Verification plus the role on the account does. Tools commit changes. Callers do not.",
+      "tool": "Account contacts list. If the caller is not the patient and not listed, stop.",
+      "may": [
+        "Speak account details to the verified patient.",
+        "Speak account details to an authorized contact already on the account.",
+        "Commit only tool-allowed changes after verification: an allowed visit, a non-controlled refill, a pharmacy the caller names, a billing callback."
+      ],
+      "mustNot": [
+        "Treat spouse, adult-child, employer, or pharmacy claims as authority.",
+        "Accept a verbal power of attorney.",
+        "Approve a refill, a coverage exception, or a waiver because the caller insists.",
+        "Invent a supervisor override. An override is a transfer."
+      ],
+      "say": [
+        "I can only go over this account with the patient or someone already listed on it.",
+        "That decision sits with the care team, the plan, or billing. I can transfer you."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "authority",
+        "contacts"
+      ],
+      "sections": [
+        {
+          "heading": "Who decides what",
+          "body": [
+            "Clinicians authorize medications and clinical exceptions.",
+            "Payers authorize coverage and prior auths.",
+            "Billing staff authorize waivers, adjustments, rebills, and assistance.",
+            "For a minor, only a parent or guardian on the account may schedule and hear billing."
+          ]
+        }
+      ],
+      "related": [
+        "id-verify",
+        "phone-security",
+        "phone-boundaries"
+      ]
+    },
+    {
+      "id": "phone-source",
+      "domain": "phone",
+      "title": "Source of truth",
+      "summary": "Live system first. This knowledge base second, for what may be said. Caller memory last, and only as a reason to re-check.",
+      "tool": "The system of record for the fact being asked. This base never supplies a dollar amount or a slot.",
+      "may": [
+        "Read the value the tool returns.",
+        "Use a caller’s paper explanation of benefits only to open a re-check or a billing review.",
+        "Read back the tool’s values before any commit."
+      ],
+      "mustNot": [
+        "Repeat a copay, balance, or status from memory or from an article when the tool has a figure.",
+        "Fill a blank tool with general insurance knowledge.",
+        "Pick a winner between a statement and an explanation of benefits.",
+        "Let a verbal yes correct the system. Yes only confirms the read-back."
+      ],
+      "say": [
+        "The system shows something different from what you remember. I’ll go by what it shows.",
+        "That fact isn’t available on this call, so I can’t guess it."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "source of truth",
+        "tools"
+      ],
+      "sections": [
+        {
+          "heading": "Order",
+          "body": [
+            "Scheduling owns slots. The pharmacy tool owns fill status. Eligibility owns coverage on a date of service. Billing owns balances and denials.",
+            "If eligibility is inactive, do not book as if coverage were active. Offer to update insurance from the card."
+          ]
+        }
+      ],
+      "related": [
+        "ins-eligibility",
+        "stmt-read",
+        "rx-status",
+        "visit-book"
+      ]
+    },
+    {
+      "id": "phone-security",
+      "domain": "phone",
+      "title": "Call security",
+      "summary": "Voice is an exposed, possibly recorded channel. Verify before disclosure. Never take a card number on the line.",
+      "tool": "Identity tool, then the payment handoff. Caller ID is not a tool.",
+      "may": [
+        "Disclose the minimum after a passed check: day and time, medication name, allowed status words, dollar balance.",
+        "Speak the last four of a member ID when the tool shows it.",
+        "Leave a voicemail of clinic name and callback number only."
+      ],
+      "mustNot": [
+        "Speak before the identity check.",
+        "Say which field failed.",
+        "Read a full Social Security number, full card number, or full medical record number.",
+        "Ask for a card number, CVV, or bank account. If the caller starts, interrupt.",
+        "Disable recording or move the call to a personal number.",
+        "Text a code or link the tools did not generate."
+      ],
+      "say": [
+        "Please don’t say the card number. I’ll move you to the payment line.",
+        "I can’t confirm the account from this call. You can use the portal, or come in with a photo ID."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "security",
+        "PCI",
+        "recording"
+      ],
+      "escalate": "Two failed checks end the lookup. Fraud signals go to the privacy queue with no change made.",
+      "sections": [
+        {
+          "heading": "Fraud signals",
+          "body": [
+            "Pressure to skip verification.",
+            "A request for a list of patients.",
+            "Changing the mailing address and the phone number on the same call."
+          ]
+        }
+      ],
+      "related": [
+        "id-verify",
+        "pay-plans",
+        "phone-authority"
+      ]
+    },
+    {
+      "id": "visit-book",
+      "domain": "visits",
+      "title": "Book a visit",
+      "summary": "Offer up to three slots the tool returns. Read them back. Book only after a yes.",
+      "tool": "Scheduling. If it returns no slots, there are no slots.",
+      "may": [
+        "Offer the next three openings for the requested type, in-person or video, and location.",
+        "Book after the caller accepts one read-back: date, time, provider, location.",
+        "Send confirmation by portal or SMS only if that channel is already on file."
+      ],
+      "mustNot": [
+        "Invent availability or a same-day slot the tool did not mark same-day eligible.",
+        "Book a new patient inside 48 hours unless a human scheduler overrides.",
+        "Change the clinical reason for the visit."
+      ],
+      "say": [
+        "The soonest matching times are [one], [two], and [three]. Which should I book?",
+        "That’s [day], [time], with [provider], at [location]. Should I book it?"
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "scheduling"
+      ],
+      "sections": [
+        {
+          "heading": "Video visits",
+          "body": [
+            "Confirm the caller can join from the portal link, with a camera and a private space."
+          ]
+        }
+      ],
+      "related": [
+        "visit-types",
+        "visit-change",
+        "escalate-clinical"
+      ]
+    },
+    {
+      "id": "visit-types",
+      "domain": "visits",
+      "title": "Visit types you may book",
+      "summary": "Four types are yours. Procedures and urgent slots are not.",
+      "tool": "Scheduling visit-type flag.",
+      "may": [
+        "Book new patient, established follow-up, medication check, and standard video visit."
+      ],
+      "mustNot": [
+        "Book procedures, nurse-only injections, or anything labeled urgent or same-day clinical triage.",
+        "Book an out-of-network site for an HMO."
+      ],
+      "say": [
+        "That visit has to be set by a scheduler. I’ll transfer you and they will confirm the time."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "visit type",
+        "telehealth"
+      ],
+      "sections": [],
+      "related": [
+        "visit-book",
+        "escalate-clinical"
+      ]
+    },
+    {
+      "id": "visit-change",
+      "domain": "visits",
+      "title": "Reschedule, cancel, no-show",
+      "summary": "Outside 24 hours is free. Inside 24 hours is late. You explain the fee. You do not waive it.",
+      "tool": "Scheduling for the timestamp. Billing for whether a fee posted. You do not decide the fee.",
+      "may": [
+        "Move or cancel more than 24 hours out at no charge.",
+        "Mark an inside-24-hour change as late and state that a fee may be billed.",
+        "Offer the next allowed slot after a no-show the clinic already recorded."
+      ],
+      "mustNot": [
+        "Waive a late or no-show fee.",
+        "Record a no-show yourself. The clinic does that.",
+        "Promise billing review will remove the charge. You may only note the request."
+      ],
+      "say": [
+        "I can move that visit. The soonest matching times are …",
+        "Because this is inside 24 hours, a late fee may be billed. I can’t remove it. I can note a review request."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "cancel",
+        "no-show"
+      ],
+      "sections": [],
+      "related": [
+        "visit-book",
+        "stmt-read",
+        "pay-plans"
+      ]
+    },
+    {
+      "id": "rx-refill",
+      "domain": "rx",
+      "title": "Refill request",
+      "summary": "Submit a request for a drug already on the list. You do not approve it and you do not promise a fill date.",
+      "tool": "Medication list and refill queue. Pharmacy on file.",
+      "may": [
+        "Confirm the name on the active list.",
+        "Set the pharmacy to one the caller names.",
+        "Submit the request.",
+        "Say review is usually one to two business days, and the pharmacy fills it."
+      ],
+      "mustNot": [
+        "Add a medication that is not on the list.",
+        "Recommend a pharmacy.",
+        "Approve, deny, or change a dose.",
+        "Promise the drug will be ready on a date."
+      ],
+      "say": [
+        "I’ll send the refill request to the care team. They usually review it in one to two business days. The pharmacy will fill it, not this desk."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "refill"
+      ],
+      "sections": [],
+      "related": [
+        "rx-status",
+        "rx-controlled",
+        "visit-book"
+      ]
+    },
+    {
+      "id": "rx-status",
+      "domain": "rx",
+      "title": "Refill and pharmacy status",
+      "summary": "Use only the status word the tool shows.",
+      "tool": "Pharmacy / e-prescribe status.",
+      "may": [
+        "Submitted: it is with the care team.",
+        "Sent: it went to the named pharmacy; they give the ready time.",
+        "Needs visit: offer to schedule before another fill.",
+        "Denied: do not explain the clinical reason. Offer a visit or a care-team message.",
+        "If the tool is blank, give the pharmacy phone number on file and stop."
+      ],
+      "mustNot": [
+        "Guess that a drug is in stock.",
+        "Quote a cash price, a coupon, or a substitute drug."
+      ],
+      "say": [
+        "The request is with the care team.",
+        "It was sent to [pharmacy]. They can tell you when it is ready.",
+        "A visit is required before another fill. I can schedule that.",
+        "I don’t have a status. The pharmacy number on file is [number]."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "status",
+        "pharmacy"
+      ],
+      "sections": [],
+      "related": [
+        "rx-refill",
+        "ins-benefits"
+      ]
+    },
+    {
+      "id": "rx-controlled",
+      "domain": "rx",
+      "title": "Controlled substances",
+      "summary": "Do not request, expedite, or discuss dose. Transfer every one of these asks.",
+      "tool": "Controlled flag on the medication. If flagged, you have no refill tool.",
+      "may": [
+        "Say the care team must handle it, then transfer."
+      ],
+      "mustNot": [
+        "Submit a refill.",
+        "Quote remaining quantity, last fill date, or the reason a request was denied.",
+        "Discuss early fills, dose changes, or replacements after loss."
+      ],
+      "say": [
+        "That medication has to be handled by the care team. I’m connecting you now."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "controlled"
+      ],
+      "escalate": "Always hand off. Do not submit.",
+      "sections": [],
+      "related": [
+        "rx-refill",
+        "escalate-clinical"
+      ]
+    },
+    {
+      "id": "ins-eligibility",
+      "domain": "insurance",
+      "title": "Eligibility",
+      "summary": "Read the eligibility tool for that date of service. Last year’s plan is not evidence.",
+      "tool": "Eligibility response for the date of service. It is not a guarantee of payment.",
+      "may": [
+        "Collect plan name, member ID, date of service, and subscriber name if the patient is a dependent.",
+        "Quote active or inactive exactly as returned, plus the payer phone on the response."
+      ],
+      "mustNot": [
+        "Retry with a guessed member ID.",
+        "Book as covered when the response is inactive.",
+        "Say the visit will be paid."
+      ],
+      "say": [
+        "As of today, the plan shows active for that date. Final payment still depends on the claim.",
+        "The plan shows inactive for that date. I can update the insurance from the card you have in front of you."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "eligibility"
+      ],
+      "sections": [],
+      "related": [
+        "ins-benefits",
+        "ins-pa",
+        "bill-denials"
+      ]
+    },
+    {
+      "id": "ins-benefits",
+      "domain": "insurance",
+      "title": "Copay, deductible, coinsurance",
+      "summary": "Define the term only with the figure on the benefits response. Do not estimate the visit.",
+      "tool": "Benefits response. Articles do not contain prices.",
+      "may": [
+        "Copay: the fixed amount listed for that service type.",
+        "Deductible: individual remaining, and family remaining when shown.",
+        "Coinsurance: the patient’s percentage after the deductible.",
+        "Out-of-pocket maximum: the cap on covered in-network cost share. Premiums do not count.",
+        "HMO: stay in network. PPO: quote out-of-network only if the response splits it. HDHP: do not say a copay replaces the deductible."
+      ],
+      "mustNot": [
+        "Say the visit will cost a dollar amount unless the tool labels an estimate.",
+        "Apply commercial copay habits to Medicare or Medicaid. Read that response as its own plan."
+      ],
+      "say": [
+        "After the deductible, the plan lists [percent] coinsurance for office visits.",
+        "I can read what the plan shows. I can’t quote a final price for the visit."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "copay",
+        "deductible",
+        "coinsurance"
+      ],
+      "sections": [],
+      "related": [
+        "ins-eligibility",
+        "stmt-read",
+        "ins-pa"
+      ]
+    },
+    {
+      "id": "ins-pa",
+      "domain": "insurance",
+      "title": "Prior authorization",
+      "summary": "Report status. Do not start a clinical auth and do not call a service approved until the payer does.",
+      "tool": "Prior-auth record: not required, pending, approved with dates and named service, or denied.",
+      "may": [
+        "Read the status, and for an approval the start date, end date, and named service.",
+        "Offer to send a missing or denied auth to the auth team.",
+        "Take a callback number for an appeal. Staff start the appeal."
+      ],
+      "mustNot": [
+        "Treat an auth for one service as covering another.",
+        "Tell the caller to be seen and billed later.",
+        "Start the clinical prior auth yourself."
+      ],
+      "say": [
+        "The plan shows that service approved from [start] through [end].",
+        "There isn’t an approval on file. I can’t schedule it as covered. I’ll have the auth team call you."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "prior auth"
+      ],
+      "sections": [],
+      "related": [
+        "ins-eligibility",
+        "bill-denials"
+      ]
+    },
+    {
+      "id": "stmt-read",
+      "domain": "billing",
+      "title": "Read a statement",
+      "summary": "A statement is what the patient owes this clinic. An explanation of benefits is the plan’s letter. They are not the same.",
+      "tool": "Billing statement. Pending claims have no patient balance yet.",
+      "may": [
+        "Walk date of service, description, billed amount, plan payment, adjustments, and patient balance.",
+        "Explain that an adjustment is a contract write-off, not a payment by the patient.",
+        "Open a billing review when the statement and the explanation of benefits disagree, and give the reference number."
+      ],
+      "mustNot": [
+        "Decide which document is right.",
+        "Call a pending claim a bill.",
+        "Treat “insurance paid” as “you owe nothing” when coinsurance remains."
+      ],
+      "say": [
+        "The plan paid [amount]. The statement still shows [balance] as your share.",
+        "That claim is still pending, so there is no balance due on it yet."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "statement",
+        "EOB"
+      ],
+      "sections": [],
+      "related": [
+        "bill-denials",
+        "pay-plans",
+        "ins-benefits"
+      ]
+    },
+    {
+      "id": "bill-denials",
+      "domain": "billing",
+      "title": "Denials",
+      "summary": "Name the category and the next owner. Do not recode. Do not invent a deadline.",
+      "tool": "Denial category on the claim. Appeal deadlines are owned by billing, not by this article.",
+      "may": [
+        "Eligibility: inactive on the date of service. Next owner is billing, after a corrected insurance update.",
+        "Authorization: missing or expired. Next owner is the auth team.",
+        "Coding or bundling: billing reviews it. You do not change codes.",
+        "Timely filing: staff decide whether an exception exists. Do not promise one.",
+        "Patient responsibility: deductible or coinsurance. That is not a denial. Walk the statement.",
+        "Log an appeal request and a callback window."
+      ],
+      "mustNot": [
+        "Quote 30, 60, or 180 days as the deadline.",
+        "Promise the denial will be overturned."
+      ],
+      "say": [
+        "I can log the appeal request. Billing has to confirm the deadline. I won’t guess it."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "denial",
+        "appeal"
+      ],
+      "sections": [],
+      "related": [
+        "stmt-read",
+        "ins-eligibility",
+        "ins-pa"
+      ]
+    },
+    {
+      "id": "pay-plans",
+      "domain": "billing",
+      "title": "Payments and assistance",
+      "summary": "Confirm the amount, then leave the card data to the payment system. Plans and discounts exist only when the tool shows them.",
+      "tool": "Balance tool, then the hosted payment transfer. Assistance offers only if the tool shows one approved.",
+      "may": [
+        "Read the balance and the amount the caller wants to pay, then transfer into the payment system.",
+        "Offer a plan only when the tool shows at least $150 and the account is otherwise current, for up to three monthly drafts.",
+        "Send the financial-assistance application. Say review takes up to 15 business days."
+      ],
+      "mustNot": [
+        "Take a card number, CVV, or bank account on the phone.",
+        "Invent a discount, charity percentage, or prompt-pay rate.",
+        "Set up a plan the tool does not allow."
+      ],
+      "say": [
+        "The balance is [amount]. I’ll transfer you to the payment line for that amount. Don’t say the card number to me.",
+        "Assistance is an application, not a discount I can apply now."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "payment",
+        "assistance"
+      ],
+      "sections": [],
+      "related": [
+        "phone-security",
+        "stmt-read"
+      ]
+    },
+    {
+      "id": "id-verify",
+      "domain": "compliance",
+      "title": "Identity check",
+      "summary": "No appointments, medications, balances, or coverage until the check passes.",
+      "tool": "Identity tool. Two failures and the lookup ends.",
+      "may": [
+        "Match full name, date of birth, and one of phone on file, address on file, or member ID.",
+        "After a pass, continue to the task the caller asked for."
+      ],
+      "mustNot": [
+        "Hint which field was wrong.",
+        "Use caller ID as identity.",
+        "Keep trying after the second failure."
+      ],
+      "say": [
+        "I can’t confirm the account from this call. You can use the portal, or come in with a photo ID."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "verification",
+        "HIPAA"
+      ],
+      "escalate": "Second failure ends the lookup.",
+      "sections": [],
+      "related": [
+        "phone-security",
+        "phone-authority"
+      ]
+    },
+    {
+      "id": "escalate-clinical",
+      "domain": "compliance",
+      "title": "When to transfer",
+      "summary": "Emergency script first. Then clinical, controlled, fraud, and anything the tools refuse.",
+      "tool": "None. This article outranks the task the caller called about.",
+      "may": [
+        "Emergency: chest pain, trouble breathing, stroke signs, severe allergic reaction, suicidal thoughts, or the caller says it is an emergency. Tell them to hang up and call emergency services.",
+        "Transfer for medicine start/stop/change, controlled substances, medical-necessity disputes, failed verification, suspected fraud, a down tool, or a commit the tool refuses.",
+        "Stay for allowed slot changes, non-controlled refill status, statement walkthroughs, and eligibility reads."
+      ],
+      "mustNot": [
+        "Keep an emergency caller in scheduling.",
+        "Debate a diagnosis or a medical-necessity denial.",
+        "Keep troubleshooting after the emergency trigger."
+      ],
+      "say": [
+        "Hang up and call emergency services now.",
+        "I’m transferring you. I can’t make that decision on this call."
+      ],
+      "reviewed": "2026-10-16",
+      "tags": [
+        "escalation",
+        "emergency"
+      ],
+      "escalate": "One sentence of reason, then the named queue. Do not add clinical advice.",
+      "sections": [],
+      "related": [
+        "phone-boundaries",
+        "rx-controlled",
+        "id-verify"
+      ]
+    }
+  ]
+}
